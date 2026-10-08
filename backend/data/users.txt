@@ -1,0 +1,5 @@
+xavier hospital HospitalA aafdc23870ecbcd3d557b6423a8982134e17927e
+carol firedept FireStationA aafdc23870ecbcd3d557b6423a8982134e17927e
+admin dispatcher HQ f865b53623b121fd34ee5426c792e5c33af8c227
+bob hospital HospitalB aafdc23870ecbcd3d557b6423a8982134e17927e
+dave police PolicePrecinct1 aafdc23870ecbcd3d557b6423a8982134e17927e

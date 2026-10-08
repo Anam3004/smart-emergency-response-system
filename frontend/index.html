@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Emergency Response System</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     PAGE: LOGIN
+══════════════════════════════════════ -->
+<div id="page-login" class="page active">
+  <div class="login-card">
+
+    <div class="login-badge">
+      <div class="icon">🚨</div>
+      <h1>Emergency Response<span>Command System v1.0</span></h1>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <div class="field">
+        <label>USERNAME</label>
+        <input type="text" id="login-user" placeholder="enter username" autocomplete="off"/>
+      </div>
+      <div class="field">
+        <label>PASSWORD</label>
+        <input type="password" id="login-pass" placeholder="••••••••"/>
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">Authenticate →</button>
+      <div class="login-error" id="login-err"></div>
+      <div class="toggle-link" onclick="showRegister()">
+        No account? <span>Register here</span>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="form-register" style="display:none">
+      <div class="field">
+        <label>USERNAME</label>
+        <input type="text" id="reg-user" placeholder="choose username" autocomplete="off"/>
+      </div>
+
+      <!-- Step 1: pick role -->
+      <div class="field">
+        <label>ROLE</label>
+        <select id="reg-role" onchange="onRoleChange()">
+          <option value="dispatcher">Dispatcher</option>
+          <option value="hospital">Hospital</option>
+          <option value="firedept">Fire Department</option>
+          <option value="police">Police</option>
+        </select>
+      </div>
+
+      <!-- Step 2: pick unit (hidden for dispatcher) -->
+      <div class="field" id="unit-field" style="display:none">
+        <label>UNIT / STATION</label>
+        <select id="reg-unit"></select>
+      </div>
+
+      <div class="field">
+        <label>PASSWORD</label>
+        <input type="password" id="reg-pass" placeholder="choose password"/>
+      </div>
+
+      <button class="btn btn-primary" onclick="doRegister()">Create Account →</button>
+      <div class="login-error" id="reg-err"></div>
+      <div class="toggle-link" onclick="showLogin()">
+        Already registered? <span>Login here</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: MAIN APP
+══════════════════════════════════════ -->
+<div id="page-app" class="page">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sys-name">SERS Control</div>
+      <div class="sys-sub">Emergency Response System</div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="u-name" id="sb-username">—</div>
+      <div class="u-role" id="sb-role">—</div>
+      <!-- Shows unit name e.g. HospitalA -->
+      <div class="u-unit" id="sb-unit" style="font-size:10px;color:var(--amber);font-family:var(--mono);margin-top:3px"></div>
+      <div id="sb-badge" class="sidebar-role-badge">—</div>
+    </div>
+
+    <nav class="nav" id="sidebar-nav"></nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="doLogout()">⏻ Logout</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-status">
+        <div class="status-dot"></div>
+        SYSTEM ONLINE
+      </div>
+    </div>
+    <div class="content" id="main-content"></div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
