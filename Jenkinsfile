@@ -18,13 +18,12 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('backend') {
-                    sh '''
-                        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                        docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-                          $ECR_REGISTRY/$ECR_REPOSITORY:latest
-                    '''
-                }
+            sh '''
+                docker build -f backend/Dockerfile \
+                -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+                docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+                $ECR_REGISTRY/$ECR_REPOSITORY:latest
+                '''
             }
         }
 

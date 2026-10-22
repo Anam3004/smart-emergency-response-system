@@ -10,7 +10,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-const EXE = path.join(__dirname, 'cpp', 'emergency.exe');
+const EXE = path.join(
+  __dirname,
+  'cpp',
+  process.platform === 'win32' ? 'emergency.exe' : 'emergency'
+);
 
 // ─────────────────────────────────────────
 // runCpp(args)

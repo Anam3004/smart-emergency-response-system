@@ -1,29 +1,38 @@
 
 FROM node:20-bookworm-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    g++ \
-    make \
+RUN apt-get update && apt-get install -y --no-install-recommends g++ \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN if [ -f package-lock.json ]; then \
-      npm ci --omit=dev; \
-    else \
-      npm install --omit=dev; \
-    fi
+COPY backend/package*.json ./backend/
 
-COPY . .
+WORKDIR /app/backend
 
-# Compile the Linux executable used by the Node.js backend.
-RUN g++ cpp/emergency.cpp cpp/dispatcher.cpp -o cpp/emergency
+RUN npm install --omit=dev
+
+WORKDIR /app
+
+COPY backend/ ./backend/
+COPY frontend/ ./frontend/
+
+RUN g++ \
+    backend/cpp/main.cpp \
+    backend/cpp/graph.cpp \
+    backend/cpp/emergency.cpp \
+    backend/cpp/resource.cpp \
+    backend/cpp/dispatcher.cpp \
+    backend/cpp/user.cpp \
+    backend/cpp/file_handler.cpp \
+    backend/cpp/sha1.cpp \
+    -o backend/cpp/emergency
 
 ENV NODE_ENV=production
-ENV PORT=5000
+ENV PORT=3000
 
-EXPOSE 5000
+EXPOSE 3000
 
-CMD ["npm", "start"]
+WORKDIR /app/backend
 
+CMD ["node", "sever.js"]
