@@ -18,11 +18,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-            sh '''
-                docker build -f backend/Dockerfile \
-                -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-                docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-                $ECR_REGISTRY/$ECR_REPOSITORY:latest
+                sh '''
+                    docker build -f backend/Dockerfile \
+                        -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+
+                    docker tag \
+                        $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+                        $ECR_REGISTRY/$ECR_REPOSITORY:latest
                 '''
             }
         }
@@ -44,14 +46,47 @@ pipeline {
                 '''
             }
         }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKERHUB_USER',
+                        passwordVariable: 'DOCKERHUB_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        set -e
+
+                        echo "$DOCKERHUB_TOKEN" | docker login \
+                            --username "$DOCKERHUB_USER" \
+                            --password-stdin
+
+                        docker tag \
+                            "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+                            "$DOCKERHUB_USER/sers:$IMAGE_TAG"
+
+                        docker tag \
+                            "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
+                            "$DOCKERHUB_USER/sers:latest"
+
+                        docker push "$DOCKERHUB_USER/sers:$IMAGE_TAG"
+                        docker push "$DOCKERHUB_USER/sers:latest"
+
+                        docker logout
+                    '''
+                }
+            }
+        }
     }
 
     post {
         always {
-            sh 'docker logout $ECR_REGISTRY || true'
+            sh 'docker logout "$ECR_REGISTRY" || true'
         }
         success {
-            echo 'SERS image built and pushed to Amazon ECR.'
+            echo 'SERS image built and pushed to Amazon ECR and Docker Hub.'
         }
         failure {
             echo 'Pipeline failed. Check Console Output.'
